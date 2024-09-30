@@ -1,0 +1,43 @@
+---
+title: "p8105_hw2_yc4585"
+output: github_document
+date: "2024-09-30"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Problem 2
+### library
+```{r message=FALSE}
+library(tidyverse)
+library(readxl)
+```
+
+### import and clean data
+
+```{r}
+mr_trash_wheel_df = read_excel("./202309 Trash Wheel Collection data.xlsx",
+                               sheet = "Mr. Trash Wheel",skip = 1) |>
+  janitor::clean_names() |>
+  select(-x15,-x16) |>
+  na.omit() |>
+  mutate(sports_balls = round(sports_balls, 0)) |>
+  mutate(sports_balls = as.integer(sports_balls))
+
+professor_trash_wheel_df = read_excel("./202309 Trash Wheel Collection data.xlsx",  sheet="Professor Trash Wheel",skip = 1) |>
+  janitor::clean_names() |>
+  na.omit() |>
+  mutate( year=as.character(year)) 
+
+Gwynnda_trash_wheel_df = 
+  read_excel("./202309 Trash Wheel Collection data.xlsx", sheet="Gwynnda Trash Wheel",
+             skip = 1,na = c("NA", ".", "")) |>
+  janitor::clean_names() |>
+  na.omit()
+
+  
+```
+
+
+
