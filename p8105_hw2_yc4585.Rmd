@@ -96,4 +96,16 @@ star_baker=filter(results_df,(result=="STAR BAKER"|result=="WINNER")&(series>4))
 ```
 All the winners had been Star Baker during their respective series, except for David, whose victory in Season 10 surprised some viewers as he had never won "Star Baker," making him one of the less predictable champions.
 
+## Viewers
+```{r}
+viewers_df = read_csv("./gbb_datasets/viewers.csv",
+                      na = c("NA", "", ".") ) |>
+                      janitor::clean_names()
+
+
+head(viewers_df,10)
+mean(pull(viewers_df,series_1),na.rm = TRUE)
+mean(pull(viewers_df,series_5),na.rm = TRUE)
+```
+From above, we can know the average viewship of season 1 is 2.77, and the viewship of season 5 is 10.0393.
 
