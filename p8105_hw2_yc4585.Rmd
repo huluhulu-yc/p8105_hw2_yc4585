@@ -52,4 +52,9 @@ Gwynnda_June_2022=filter(Gwynnda_trash_wheel_df,month=="June"&year==2022)
 sum(pull(Gwynnda_June_2022,cigarette_butts))
 ```
 
+  We can see that the data from Mr. Trash Wheel is the most comprehensive, with a total of 584 dumpster-related entries, followed by Professor Trash Wheel with 103 dumpster-related entries, and Gwynnda Trash Wheel with the least, having only 38 dumpster-related entries. In the three separate datasets, the information provided includes the dumpster number, date, trash weight and volume, and the quantities of plastic bottles, polystyrene, cigarette butts, glass bottles, plastic bags, wrappers, and sports balls collected. These data allow us to clearly see the role of the trash wheels in waste collection and environmental 
+  
+  The largest amount of trash collected by Mr. Trash Wheel was 5.31 tons, and the smallest was 1.32 tons. In contrast, the largest amount of trash collected by Professor Trash Wheel was 2.25 tons, and the smallest was 1.52 tons. This could be due to Mr. Trash Wheel's greater trash collection capacity, or it could be because Professor Trash Wheel is typically deployed in areas with less trash. 
+  
+  From the table, we can see that the total weight of trash collected by Professor Trash Wheel is 216.26 tons. It can be calculated that the total number of cigarette butts collected by Gwynnda in June 2022 is 18,120.
 
