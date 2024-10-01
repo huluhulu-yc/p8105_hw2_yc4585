@@ -7,14 +7,14 @@ date: "2024-09-30"
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-## Problem 2
-### library
+# Problem 2
+## library
 ```{r message=FALSE}
 library(tidyverse)
 library(readxl)
 ```
 
-### import and clean data
+## import and clean data
 
 ```{r}
 mr_trash_wheel_df = read_excel("./202309 Trash Wheel Collection data.xlsx",
