@@ -16,72 +16,95 @@ library(readxl)
 
 ## import and clean data
 
-```{r}
-mr_trash_wheel_df = read_excel("./202309 Trash Wheel Collection data.xlsx",
-                               sheet = "Mr. Trash Wheel",skip = 1) |>
+```{r message=FALSE}
+mr_trash_wheel_df = 
+  read_excel("./202409 Trash Wheel Collection data.xlsx",
+              sheet = "Mr. Trash Wheel",
+             skip = 1) |>
   janitor::clean_names() |>
+  filter(!is.na(dumpster)) |>
   select(-x15,-x16) |>
-  na.omit() |>
   mutate(sports_balls = round(sports_balls, 0)) |>
   mutate(sports_balls = as.integer(sports_balls))
 
-professor_trash_wheel_df = read_excel("./202309 Trash Wheel Collection data.xlsx",  sheet="Professor Trash Wheel",skip = 1) |>
+professor_trash_wheel_df = 
+  read_excel("./202409 Trash Wheel Collection data.xlsx",
+             sheet="Professor Trash Wheel",
+             skip = 1) |>
   janitor::clean_names() |>
-  na.omit() |>
-  mutate( year=as.character(year)) 
+  filter(!is.na(dumpster)) |>
+  mutate( year=as.character(year)) |>
+  mutate(homes_powered=as.integer(homes_powered))
 
 Gwynnda_trash_wheel_df = 
-  read_excel("./202309 Trash Wheel Collection data.xlsx", sheet="Gwynnda Trash Wheel",
-             skip = 1,na = c("NA", ".", "")) |>
-  janitor::clean_names() 
- 
+  read_excel("./202409 Trash Wheel Collection data.xlsx", 
+             sheet="Gwynnda Trash Wheel",
+             skip = 1,
+             na = c("NA", ".", "")) |>
+  janitor::clean_names() |>
+  filter(!is.na(dumpster)) |>
+  mutate(homes_powered=as.integer(homes_powered))
+
 
 ```
 ## Combine datasets
 ```{r}
-first_trash_df=left_join(mr_trash_wheel_df,professor_trash_wheel_df,by="dumpster",
-             suffix=c(".mr",".professor"))
+first_trash_df = 
+  left_join(mr_trash_wheel_df,professor_trash_wheel_df,
+            by = "dumpster",
+            suffix = c(".mr",".professor"))
 
-final_trash_df=left_join(first_trash_df,Gwynnda_trash_wheel_df,by="dumpster",suffix = c("",".Gwynnda"))
+final_trash_df = 
+  left_join(first_trash_df,Gwynnda_trash_wheel_df,
+            by = "dumpster",
+            suffix = c("",".Gwynnda"))
 
 ```
 
 ## Calculate data
 ```{r}
-Gwynnda_June_2022=filter(Gwynnda_trash_wheel_df,month=="June"&year==2022)
+sum(pull(professor_trash_wheel_df,weight_tons),
+    na.rm = TRUE)
+
+Gwynnda_June_2022 = filter(Gwynnda_trash_wheel_df,
+                           month=="June"&year==2022)
 sum(pull(Gwynnda_June_2022,cigarette_butts))
 ```
 
-  We can see that the data from Mr. Trash Wheel is the most comprehensive, with a total of 584 dumpster-related entries, followed by Professor Trash Wheel with 103 dumpster-related entries, and Gwynnda Trash Wheel with the least, having only 38 dumpster-related entries. In the three separate datasets, the information provided includes the dumpster number, date, trash weight and volume, and the quantities of plastic bottles, polystyrene, cigarette butts, glass bottles, plastic bags, wrappers, and sports balls collected. These data allow us to clearly see the role of the trash wheels in waste collection and environmental 
+  We can see that the data from Mr. Trash Wheel is the most comprehensive, with a total of 651 dumpster-related entries, followed by Gwynnda Trash Wheel with 263 dumpster-related entries, and Professor Trash Wheel with the least, having only 119 dumpster-related entries. In the three separate datasets, the information provided includes the dumpster number, date, trash weight and volume, and the quantities of plastic bottles, polystyrene, cigarette butts, glass bottles, plastic bags, wrappers, and sports balls collected. These data allow us to clearly see the role of the trash wheels in waste collection and environmental 
   
-  The largest amount of trash collected by Mr. Trash Wheel was 5.31 tons, and the smallest was 1.32 tons. In contrast, the largest amount of trash collected by Professor Trash Wheel was 2.25 tons, and the smallest was 1.52 tons. This could be due to Mr. Trash Wheel's greater trash collection capacity, or it could be because Professor Trash Wheel is typically deployed in areas with less trash. 
+  The largest amount of trash collected by Mr. Trash Wheel was 5.31 tons, and the smallest was 1.25 tons. In contrast, the largest amount of trash collected by Professor Trash Wheel was 3.75 tons, and the smallest was 0.61 tons. This could be due to Mr. Trash Wheel's greater trash collection capacity, or it could be because Professor Trash Wheel is typically deployed in areas with less trash. 
   
-  From the table, we can see that the total weight of trash collected by Professor Trash Wheel is 216.26 tons. It can be calculated that the total number of cigarette butts collected by Gwynnda in June 2022 is 18,120.
+  From the table, we can calculate that the total weight of trash collected by Professor Trash Wheel is 246.74 tons. It can be calculated that the total number of cigarette butts collected by Gwynnda in June 2022 is 18,120.
 
 # Problem 3
 ## Import and clean data
-```{r}
-bakers_df = read_csv("./gbb_datasets/bakers.csv") |>
+```{r message=FALSE}
+bakers_df = 
+  read_csv("./gbb_datasets/bakers.csv") |>
   janitor::clean_names() |>
-  rename(baker=baker_name) |>
+  rename(baker = baker_name) |>
   mutate(baker = str_split(baker, ' ', simplify = T)[, 1])
 
-bakes_df = read_csv("./gbb_datasets/bakes.csv",
-                    na = c("N/A", "", ".") ) |>
-                    janitor::clean_names()
+bakes_df = 
+  read_csv("./gbb_datasets/bakes.csv",
+            na = c("N/A", "", ".") ) |>
+  janitor::clean_names()
 
-results_df = read_csv("./gbb_datasets/results.csv",
-                    skip=2,
-                    na = c("NA", "", ".") ) |>
-                    janitor::clean_names() |>
-                    drop_na(technical,result)
+results_df = 
+  read_csv("./gbb_datasets/results.csv",
+            skip = 2,
+            na = c("NA", "", ".") ) |>
+  janitor::clean_names() |>
+  drop_na(technical,result)
 ```
 ## Combine data
 ```{r}
-by=join_by(series,episode,baker)
-first_combined_df=left_join(results_df,bakes_df,by)
-by=join_by(series,baker)
-final_conbined_df=left_join(first_combined_df,bakers_df,by)
+by = join_by(series,episode,baker)
+first_gbb_df = left_join(results_df,bakes_df,by)
+
+by = join_by(series,baker)
+final_gbb_df = left_join(first_gbb_df,bakers_df,by)
 ```
 
 When processing the bakes data, N/A values and blank spaces need to be handled as missing values (NA). Additionally, in the baker.csv file, the naming format in the baker name column is different from the other two tables, as it uses full names, unlike the other two tables. Therefore, the first name was retained during processing. In the bakes data, N/A values and blank spaces should be considered missing values (NA). When handling the results.csv file, N/A values and blank spaces were also considered missing values. The first two rows, which contained no data, were skipped, and rows where both the technical and result columns were entirely NA were removed.
@@ -91,16 +114,19 @@ When merging datasets, the results and bakes datasets were first merged by seaso
 ## Star baker&winner
 
 ```{r}
-star_baker=filter(results_df,(result=="STAR BAKER"|result=="WINNER")&(series>4))
+star_baker = filter(
+             results_df,
+            (result=="STAR BAKER"|result=="WINNER")&(series>4))
 
 ```
 All the winners had been Star Baker during their respective series, except for David, whose victory in Season 10 surprised some viewers as he had never won "Star Baker," making him one of the less predictable champions.
 
 ## Viewers
 ```{r}
-viewers_df = read_csv("./gbb_datasets/viewers.csv",
-                      na = c("NA", "", ".") ) |>
-                      janitor::clean_names()
+viewers_df = 
+  read_csv("./gbb_datasets/viewers.csv",
+            na = c("NA", "", ".") ) |>
+  janitor::clean_names()
 
 
 head(viewers_df,10)
